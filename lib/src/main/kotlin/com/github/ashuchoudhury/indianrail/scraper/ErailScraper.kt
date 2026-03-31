@@ -150,13 +150,16 @@ class ErailScraper(private val client: HttpClient) {
     }
 
     private fun parseCheckTrain(raw: String): BaseResponse<Train> {
+        if (raw.contains("Train not found", ignoreCase = true)) {
+            return BaseResponse(false, System.currentTimeMillis(), error = "Train not found")
+        }
         val parts = raw.split("~~~~~~~~").filter { it.isNotBlank() }
         if (parts.isEmpty()) return BaseResponse(false, System.currentTimeMillis(), error = "Train not found")
 
         val data1 = parts[0].split("~").filter { it.isNotBlank() }.toMutableList()
-        if (data1.size > 1 && data1[1].length > 6) data1.removeAt(0)
+        if (data1.size > 1 && data1[1].length > 8) data1.removeAt(0) // Handle extra prefix if present
 
-        if (data1.size < 15) return BaseResponse(false, System.currentTimeMillis(), error = "Malformed train data")
+        if (data1.size < 12) return BaseResponse(false, System.currentTimeMillis(), error = "Malformed train data")
 
         val train = Train(
             train_no = data1.getOrNull(1)?.replace("^", "") ?: "",
