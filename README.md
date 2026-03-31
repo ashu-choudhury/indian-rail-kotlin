@@ -41,7 +41,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 dependencies {
-    implementation("com.github.ashu-choudhury:indian-rail-kotlin:1.2.0")
+    implementation("com.github.ashu-choudhury:indian-rail-kotlin:1.2.1")
 }
 ```
 
