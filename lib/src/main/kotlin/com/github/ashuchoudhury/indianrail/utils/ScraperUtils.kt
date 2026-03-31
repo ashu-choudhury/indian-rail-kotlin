@@ -1,6 +1,6 @@
 package com.github.ashuchoudhury.indianrail.utils
 
-import java.util.Calendar
+import java.time.LocalDate
 
 object ScraperUtils {
     val USER_AGENTS = listOf(
@@ -11,17 +11,20 @@ object ScraperUtils {
 
     fun getRandomUserAgent() = USER_AGENTS.random()
 
+    @JvmStatic
     fun getDayOnDate(dd: Int, mm: Int, yyyy: Int): Int {
-        val calendar = Calendar.getInstance()
-        calendar.set(yyyy, mm - 1, dd)
-        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // 1 = Sunday, ..., 7 = Saturday
-        
-        // Match the logic from Node.js scraper:
-        // day = date.getDay() >= 0 && date.getDay() <= 2 ? date.getDay() + 4 : date.getDay() - 3;
-        // JS getDay(): 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
-        // Kotlin DAY_OF_WEEK: 1 = Sun, 2 = Mon, 3 = Tue, 4 = Wed, 5 = Thu, 6 = Fri, 7 = Sat
-        
-        val jsDay = dayOfWeek - 1
-        return if (jsDay in 0..2) jsDay + 4 else jsDay - 3
+        return try {
+            val localDate = LocalDate.of(yyyy, mm, dd)
+            val dayOfWeek = localDate.dayOfWeek.value // 1 (Monday) to 7 (Sunday)
+            
+            // Map DayOfWeek to JS day (0 = Sunday, 1 = Monday)
+            val jsDay = if (dayOfWeek == 7) 0 else dayOfWeek
+            
+            // Indian Rail website maps running days based on a custom index where:
+            // Wed=0, Thu=1, Fri=2, Sat=3, Sun=4, Mon=5, Tue=6
+            if (jsDay in 0..2) jsDay + 4 else jsDay - 3
+        } catch (e: Exception) {
+            -1
+        }
     }
 }

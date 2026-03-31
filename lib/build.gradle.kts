@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.ashu-choudhury"
-version = "1.0.1"
+version = "1.2.0"
 
 dependencies {
     implementation("io.ktor:ktor-client-core:3.0.0")
@@ -18,6 +18,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 
     testImplementation(kotlin("test"))
+    testImplementation("io.ktor:ktor-client-mock:3.0.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 }
 
 tasks.test {
