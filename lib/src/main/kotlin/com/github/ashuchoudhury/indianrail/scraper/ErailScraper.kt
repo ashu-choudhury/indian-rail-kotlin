@@ -86,11 +86,11 @@ class ErailScraper(private val client: HttpClient) {
 
             val doc = Jsoup.parse(responseText)
             
-            // Look for the current station / delay info often in standard tables or meta tags
-            // Erail embeds some data in a table or via script
-            // For now, let's attempt to scrape the latest status from their meta description or specific divs
+            // Erail embeds status in specific divs or tables. 
+            // Often "div#msg" contains the latest status message.
             val statusText = doc.select("div#msg").text().ifEmpty { 
-                doc.select("table.stndetailrun").firstOrNull()?.text() ?: ""
+                doc.select("div.pnlRunStatus b").firstOrNull()?.text() ?: 
+                doc.select("h1").firstOrNull()?.text() ?: ""
             }
             
             // Map it to LiveStatusData structure
