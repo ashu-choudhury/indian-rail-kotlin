@@ -6,13 +6,13 @@ plugins {
 }
 
 group = "com.github.ashu-choudhury"
-version = "1.2.3"
+version = "1.2.4"
 
 dependencies {
-    api("io.ktor:ktor-client-core:3.0.0")
-    implementation("io.ktor:ktor-client-okhttp:3.0.0")
-    implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
+    api("io.ktor:ktor-client-core:2.3.12")
+    implementation("io.ktor:ktor-client-okhttp:2.3.12")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
 
     implementation("org.jsoup:jsoup:1.18.1")
 

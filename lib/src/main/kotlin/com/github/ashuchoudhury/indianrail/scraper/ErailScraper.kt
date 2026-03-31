@@ -86,19 +86,17 @@ class ErailScraper(private val client: HttpClient) {
 
             val doc = Jsoup.parse(responseText)
             
-            // Erail embeds status in specific divs or tables. 
-            // Often "div#msg" contains the latest status message.
-            val statusText = doc.select("div#msg").text().ifEmpty { 
+            val statusMessage = doc.select("div#msg").text().ifEmpty { 
                 doc.select("div.pnlRunStatus b").firstOrNull()?.text() ?: 
-                doc.select("h1").firstOrNull()?.text() ?: ""
+                doc.select("h1").firstOrNull()?.text() ?: "Status Unknown"
             }
             
-            // Map it to LiveStatusData structure
-            // NOTE: Full scraping requires detailed CSS selection which varies, 
-            // but we use structural defaults to avoid crashes.
+            val currentStationName = statusMessage.substringBefore(" (").trim()
+            val delayValue = parseDelay(statusMessage)
+            
             val currentStation = LiveStationStatus(
-                StationName = statusText.substringBefore(" (").trim(),
-                DelayInMinutes = parseDelay(statusText),
+                StationName = currentStationName,
+                DelayInMinutes = delayValue,
                 IsCurrentStation = true,
                 ArrivalTime = "N/A",
                 DepartureTime = "N/A"
@@ -106,7 +104,7 @@ class ErailScraper(private val client: HttpClient) {
             
             val data = LiveStatusData(
                 TrainNo = trainNo,
-                TrainName = doc.select("h1").firstOrNull()?.text()?.substringAfter(trainNo)?.trim(),
+                TrainName = doc.select("h1").firstOrNull()?.text()?.substringAfter(trainNo)?.trim() ?: "Train $trainNo",
                 StationName = currentStation.StationName,
                 DelayInMinutes = currentStation.DelayInMinutes,
                 UpdateTime = System.currentTimeMillis().toString(),
