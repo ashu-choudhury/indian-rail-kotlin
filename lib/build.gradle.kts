@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.ashu-choudhury"
-version = "1.2.2"
+version = "1.2.3"
 
 dependencies {
     api("io.ktor:ktor-client-core:3.0.0")

@@ -96,12 +96,21 @@ class ErailScraper(private val client: HttpClient) {
             // Map it to LiveStatusData structure
             // NOTE: Full scraping requires detailed CSS selection which varies, 
             // but we use structural defaults to avoid crashes.
+            val currentStation = LiveStationStatus(
+                StationName = statusText.substringBefore(" (").trim(),
+                DelayInMinutes = parseDelay(statusText),
+                IsCurrentStation = true,
+                ArrivalTime = "N/A",
+                DepartureTime = "N/A"
+            )
+            
             val data = LiveStatusData(
                 TrainNo = trainNo,
                 TrainName = doc.select("h1").firstOrNull()?.text()?.substringAfter(trainNo)?.trim(),
-                StationName = statusText.substringBefore(" (").trim(),
-                DelayInMinutes = parseDelay(statusText),
-                UpdateTime = System.currentTimeMillis().toString()
+                StationName = currentStation.StationName,
+                DelayInMinutes = currentStation.DelayInMinutes,
+                UpdateTime = System.currentTimeMillis().toString(),
+                Stations = listOf(currentStation)
             )
             
             BaseResponse(true, System.currentTimeMillis(), data = data)

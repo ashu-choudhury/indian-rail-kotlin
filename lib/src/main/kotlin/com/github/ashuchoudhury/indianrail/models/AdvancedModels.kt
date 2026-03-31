@@ -1,12 +1,13 @@
 package com.github.ashuchoudhury.indianrail.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class LiveStatusData(
-    val TrainNo: String? = null,
-    val TrainName: String? = null,
-    val RequiredPosition: String? = null,
+    @SerialName("TrainNo") val TrainNo: String? = null,
+    @SerialName("train_name") val TrainName: String? = null,
+    @SerialName("status") val RequiredPosition: String? = null,
     val RunDate: String? = null,
     val StationName: String? = null,
     val StationCode: String? = null,
@@ -15,7 +16,22 @@ data class LiveStatusData(
     val HasDeparted: Boolean = false,
     val IsTerminated: Boolean = false,
     val DistanceFromSource: String? = null,
-    val UpdateTime: String? = null
+    @SerialName("new_last_updated") val UpdateTime: String? = null,
+    @SerialName("data") val Stations: List<LiveStationStatus> = emptyList()
+)
+
+@Serializable
+data class LiveStationStatus(
+    @SerialName("station_name") val StationName: String? = null,
+    val StationCode: String? = null,
+    @SerialName("arrival") val ArrivalTime: String? = null,
+    @SerialName("departure") val DepartureTime: String? = null,
+    @SerialName("delay") val DelayInMinutes: Int = 0,
+    @SerialName("is_current_station") val IsCurrentStation: Boolean = false,
+    val ScheduleArrival: String? = null,
+    val ScheduleDeparture: String? = null,
+    val Distance: String? = null,
+    val DayCount: Int = 0
 )
 
 @Serializable
